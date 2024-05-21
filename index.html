@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tic-tac-toe game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1><u>
+            
+            Tic Tac Toe Game</h1>
+        </u>
+        <div class="game-board">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+        </div>
+
+        <div class="game-player">
+            <div class="player player 1">Player 1:O</div>
+            <div class="player player 2">Player 2:X</div>
+        </div>
+        <button class="restart">Restart</button>
+        <div class="alertBox">Alert</div>
+    </div>
+    
+    <script>
+        const gcells=document.querySelectorAll('.cell');
+        const player1=document.querySelector('.player1');
+        const player2=document.querySelector('.player2');
+        const restart=document.querySelector('.restart');
+        const alertBox=document.querySelector('.alertBox');
+        let currentPlayer='O';
+        let nextPlayer='X';
+        let turn=currentPlayer;
+        // player1.textContent=`Player 1: ${currentPlayer}`;
+        // player2.textContent=`Player 2: ${nextPlayer}`;
+        const startgame=()=>{
+            gcells.forEach(cell=>{
+                cell.addEventListener('click',handleclick)
+                  
+                
+            });
+
+        }
+        
+        const playerturn=()=>{
+            if(turn===currentPlayer){
+                turn=nextPlayer;
+            }
+            else{
+                turn=currentPlayer;
+            }
+            
+            // turn=turn===currentPlayer?nextPlayer:currentPlayer;
+        }
+
+        const checkwin=()=>{
+            const winningCondition=[
+                [0,1,2],
+                [3,4,5],
+                [6,7,8],
+                [0,3,6],
+                [1,4,7],
+                [2,5,8],
+                [0,4,8],
+                [2,4,6],
+            ];
+
+            for(let i=0;i<winningCondition.length;i++){
+                const [pos1,pos2,pos3]=winningCondition[i];
+                if(gcells[pos1].textContent!=='' && 
+                gcells[pos1].textContent===gcells[pos2].textContent &&
+                gcells[pos2].textContent===gcells[pos3].textContent){
+                    return true;
+
+                }
+            }
+            return false;
+        }
+
+        const checkTie=()=>{
+            let emptycells=0;
+            gcells.forEach(cell=>{
+                if(cell.textContent===''){
+                    emptycells++;
+                }
+            });
+            return emptycells===0 && !checkwin();
+
+        }
+
+        const handleclick=(e)=>{
+            if(e.target.textContent===''){
+                        e.target.textContent=turn;
+                        if(checkwin()){
+                            showalert( `${turn} is winner`);
+                            disable();
+                        }
+                        else if(checkTie()){
+                            showalert('there is tie');
+                            disable();
+                        }   
+                        else{
+
+                            playerturn();
+                            showalert(`Turn for player:${turn}`);
+                        }           
+
+                    }
+
+        }
+
+        const disable=()=>{
+            gcells.forEach(cell=>{
+                cell.removeEventListener('click',handleclick);
+                cell.classList.add('disabled');
+            })
+        }
+        const restartgame=()=>{
+            gcells.forEach(cell=>{
+                cell.textContent='';
+                cell.classList.remove('disabled');
+
+            });
+            turn=currentPlayer;
+            startgame();
+
+        }
+        const showalert=(msg)=>{
+            alertBox.style.display="block";
+            alertBox.textContent=msg;
+            setTimeout(()=>{
+                alertBox.style.display="none";
+            },4000);
+
+        }
+
+        restart.addEventListener('click',restartgame);
+        startgame();
+
+    </script>
+</body>
+</html>
